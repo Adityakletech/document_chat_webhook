@@ -5,11 +5,13 @@ import docx2txt
 import io
 import os
 
+# Initialize Flask app first!
+app = Flask(__name__)
+
+# Home route to verify deployment
 @app.route("/", methods=["GET"])
 def index():
     return "✅ Flask is running on Render!"
-
-app = Flask(__name__)
 
 # Get API Key from environment variable
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
@@ -79,11 +81,4 @@ def webhook():
         if not context_text:
             return jsonify({"error": "Could not extract text"}), 400
 
-        answer = ask_llm(question, context_text)
-        return jsonify({"answer": answer})
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+        answer = ask_ll_
