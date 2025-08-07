@@ -5,6 +5,10 @@ import docx2txt
 import io
 import os
 
+@app.route("/", methods=["GET"])
+def index():
+    return "✅ Flask is running on Render!"
+
 app = Flask(__name__)
 
 # Get API Key from environment variable
