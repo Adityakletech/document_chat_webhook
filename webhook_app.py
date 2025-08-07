@@ -5,22 +5,16 @@ import docx2txt
 import io
 import os
 
-# Initialize Flask app first!
-app = Flask(__name__)
+app = Flask(__name__)  # ✅ Define app BEFORE using it
 
-# Home route to verify deployment
-@app.route("/", methods=["GET"])
-def index():
-    return "✅ Flask is running on Render!"
-
-# Get API Key from environment variable
+# Load API details
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 BASE_URL = "https://openrouter.ai/api/v1"
 MODEL_NAME = "deepseek/deepseek-r1:free"
 
 client = OpenAI(base_url=BASE_URL, api_key=OPENROUTER_API_KEY)
 
-# --- Helper functions ---
+# --- Extractors ---
 def extract_pdf_text(file):
     pdf_reader = pypdf.PdfReader(file)
     text = ""
@@ -66,6 +60,10 @@ def ask_llm(question, context_text):
     )
     return response.choices[0].message.content
 
+@app.route("/", methods=["GET"])
+def index():
+    return "✅ Flask is running on Render!"
+
 @app.route("/webhook", methods=["POST"])
 def webhook():
     try:
@@ -81,4 +79,11 @@ def webhook():
         if not context_text:
             return jsonify({"error": "Could not extract text"}), 400
 
-        answer = ask_ll_
+        answer = ask_llm(question, context_text)
+        return jsonify({"answer": answer})
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
