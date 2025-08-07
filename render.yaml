@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: document-chat-webhook
+    env: python
+    buildCommand: ""
+    startCommand: python webhook_app.py
+    plan: free
+    envVars:
+      - key: OPENROUTER_API_KEY
+        value: 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
